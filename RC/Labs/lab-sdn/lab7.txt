@@ -1,0 +1,12 @@
+Q1: Because the switch needs to get the rules from the controller, hence making the time greater in the 1st attempt than in the following ones.
+
+Q2: Pings don't get any replies, because there are no rules installed in the swicthes yet. This configuration is not reactive, so it doesn't send packets to controller to compute the rules, making the swicth drop the packet. And also the controller is offline, so the switch won't have the rules installed to process the packet.
+
+Q3: It doesn't work again. We need 2 more rules, similar to the last one, to forward the packet from that src, with that dest from the input port to the corret output port that leads to h2. And we also need a similar rule that sends tha packet with src = 2, dest=1, da porta de h2 para a do switch s1.
+
+Q4: Yes, because the switch already has the rules installed. From h1 to h3, it isn't possible because the switch doesn't have the necessary rules and the controller is not online to compute and install the necessary rules.
+
+Q5: * screenshot *
+
+Q6: * screenshot *
+

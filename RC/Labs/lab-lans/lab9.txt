@@ -1,0 +1,50 @@
+Q1:
+Alice eth0: 10.0.1.20/24, 00:00:00:aa:00:01
+Bob eth0: 10.0.1.21/24, 00:00:00:aa:00:02
+Carol eth0: 10.0.0.20/24, 00:00:00:bb:00:01
+Router eth0: 10.0.0.1/24, 00:00:00:bb:00:00
+Router eth1: 10.0.1.1/24, 00:00:00:aa:00:00
+(IP in the first field, MAC address in the second one)
+
+Q2:
+The first packet has the job to find the MAC address of the destination host identified by it's IP in the packet. So the first packet has source == MAC addr of Alice and destination == Broadcast to send to the packet to all hosts in subnet. Bob receives that ARP packet and, because it has the destination IP of the packet, replies (to ALice) with another ARP packet identifying it's IP and MAC addresses. The UDP packet is only sent after the ARP packets, because the sender needs to know both the IP and MAC addresses of the destination before sending it.
++ screenshot
+
+Q3:
+We can conclude that when Bob received the first ARP packet from Alice it registered in it's ARP table the translation between IP and MAC address of Alice to be able to reach it.
+
+Q4:
+The first packet is sent from Carol to all hosts in the subnet to find the MAC address of the host matching the destination IP. It finds no answer in the same subnet, so the router will forward the packet from that subnet to another one (this is the difference to Q2: the hosts communicating are not in the same network). This probably happens until the ARP packet finds it's correct destination. Then, the destination host replies with a packet to Carol identifying it's MAC address. This packet also passes through the router. Only after knowing Alice's IP and MAC addresses, Carol can send the UDP packet.
++ screenshot
+
+Q5:
+The IP offered to Alice it's 10.0.0.128/24 and it's valid during 600 seconds (10 minutes).
++ optional screenshot
+
+Q6: ** confirmar c stor **
+The router broadcasts ARP requests before sending the DHCP offer to Alice to identify which IPs are available (for lease) in it's network.
+
+Q7:
+Only the interfaces eth2 and eth3 of the switch, belonging to the same VLAN, see the broadcasts of that VLAN. Interfaces eth0 and eth1 don't see the broadcasts, because they are in a separate VLAN, hence not seeing the communications happening in another VLAN.
++ optional screenshot
+
+Q8: ** confirmar c stor **
+The interface eth4 of the switch in building 1 needs to tag the packets going through it with VLAN tags so the switch in building 2 knows where the packets came from (which VLAN in building 1) and can redirect them accordingly to hosts of the same VLAN in building 2.
+
+Q9: ** confirmar (comandos mal) **
+Correr isto no switch do building 2, com <TAGGED_IF> = eth2:
+ip link add link <TAGGED_IF> name <TAGGED_IF>.100 type vlan id 100
+ip link add link <TAGGED_IF> name <TAGGED_IF>.200 type vlan id 200
+ip link set dev <TAGGED_IF>.100 up
+ip link set dev <TAGGED_IF>.200 up
++ screenshot
+
+Q10: ** confirmar (nao vi resultados porque os comandos deviam tar mal) **
+On the switch of building 2, only interfaces eth2 and eth0 see the broadcasts, because they belong to the same VLAN (configured using trunk ports). Interface eth1 doesn't see the broadcasts, because it is in a different VLAN.
+
+Q11: ** fazer e tirar screenshot **
++ screenshot
+
+Q12: ** confirmar depois das outras **
+No, because the VLAN tag is only used by the switches to identify which VLANs the packet can reach and redirect it accordingly. After it gets redirect, it reaches the subnet without any VLAN tags, because it's already in the correct VLAN.
+

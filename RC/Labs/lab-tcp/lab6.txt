@@ -1,0 +1,25 @@
+q1:
++img
+
+q2: * ver img e slides e fazer diagrama *
++diagrama
+
+q3: * confirmar *
+The server distinguish both clients by identifying their IP addresses and port numbers. Even if both clients had the same IP address, the server could distinguish them by the port number. The 4 values (Sources IP + port, Dest IP + source) identify the packet.
+
+q4: * confirmar *
+A ligação termina normalmente com pacotes FYN (e ACK). Não é possível identificar nenhum pacote do tipo FYN no trace file usado.
+
+q5:
+Neste caso, a conexão TCP não é feita porque as portas estão a ser reusadas, daí a flag RST de RESET estar ativa para indicar o cliente para tentar conectar-se de novo.
+
+q6: * confirmar *
+If packets arrives out of order...
+
+q7:
+Antes do 1º conj de traços vermelhos, por volta de 2seg, temos slow start. Depois temos congestion control.
++img
+
+q8:
+A fast retrasmission makes the sender retransmit the lost packet, the receiver gets it and the communication continues normally. In a regular transmission, after a timeout, the window size is reduced and we have a new slow start, decreasing the speed of the communication.
+

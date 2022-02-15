@@ -1,0 +1,56 @@
+q1:
+ns2.tecnico.ulisboa.pt
+ns1.tecnico.ulisboa.pt
+a.ul.pt
+
+q2:
+It contains one record of CNAME type to know the alias for www.ulisboa.pt and the other record has type A and shows us the IP of that canonical name.
+
+q3:
+dns-admin@dsi.tecnico.ulisboa.pt
+
+q4:
+For HTTP:
+193.136.128.169
+
+For SMTP:
+smtp1.tecnico.ulisboa.pt
+smtp2.tecnico.ulisboa.pt
+smtp.tecnico.ulisboa.pt
+
+q5:
+4 (Resolver + Root + TLD + Authoritative)
+
+q6: * confirmar *
++ img (nos downloads)
+
+q7: * confirmar *
+They can contain valuable information, like aliases, to make the name resolution faster.
+
+q8:
+Yes, it is authoritative, because the result (the IP) comes from an authoritative server.
+
+q9: * confirmar *
+dig contacts only 1 server (resolver)
+resolver contacts only 1 server too (root)
+
+q10: * confirmar *
+No, it is not authoritative, because the result comes from our resolver and not from the authoritative server.
+
+q11:
+1ª vez: 7ms
+2ª vez: 667ms
+Da 2ª vez, como a cache é limpa, não tem o resultado em cache e demora mais tempo a resolver a query.
+
+q12: * confirmar *
+No, because there's only 1 server and if it is shut down immediately, it is unnable to attend requests.
+
+q13: * confirmar *
+Yes, it's a reasonable time, although it depends on what's the server for. 30 secs of TTL it's enoguh to have updated e-mails, announcements and other stuff in time.
+
+q14: * completar *
++ imgs
+
+q15: * completar *
+Não tem resposta para esse pedido apesar do servidor existir.
+

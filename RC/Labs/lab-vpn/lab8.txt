@@ -1,0 +1,42 @@
+Q1: ** confirmar **
+?
+
+Q2:
+ip tunnel add gre1 mode gre local 10.0.2.2 remote 10.0.0.1
+ip link set gre1 up
+ip addr add 10.10.10.2/24 dev gre1
+
+Q3: + screenshot
+We see in Wireshark that the ICMP packets have 2 "Internet Procotol" sevtions, each with a source and destination fields. In the first of these 2 sections, we have source = 10.0.0.1 and dest = 10.0.2.2, meaning that r3 will look at these fields and redirect the packet to r4. In r4, the packets are decapsulated, because it's the end of the tunnel, and r4 will look at the ineel IP datagram with source = 10.10.10.1 and destination = 10.10.10.2. O de baixo é o que tá mais adentro no encapsulamento.
+
+Q4:
+ip route add 10.0.3.0/24 via 10.10.10.2
+
+Q5: + screenshot
+The content is not ciphered, because we can see the content of the HTTP reply in Wireshark. If it was ciphered, we would only see the cipher and not the actual content. There is a tunnel working with encapsulation, but without ciphers.
+
+Q6: + screenshot
+No, it will not be GRE-encapsulated, because it doesn't match the addreses needed to use the tunnel (encapsulation). Using Wireshark on eth1 of r3, we can see that r3 received 1 packet without encapsulation from the ping request with source IP = 10.0.2.2 and dest IP = 10.0.5.10.
+
+Q7: ** confirmar **
+It can't reach the desktop at home, because home has a vpnserver that filters the traffic, making it impossible for the packet to reach it.
+
+Q8: + screenshots
+The IP where to listen is missing. The port of the server and the type of request too.
+
+Q9: + screenshot
+The server will get the IP 10.0.200.1
+
+Q10: + screenshot
+The remote IP of the OpenVPN server is missing.
+
+Q11: + screenshot
+Using ifconfig on client we found out it's IP addreses on the VPN is 10.0.200.6
+
+Q12:
+No vpnserver: ip route add 10.0.0.0/24 via 10.0.200.1
+No client: ip route add 10.0.6.0/24 via 10.0.200.6
+
+Q13: + screenshot
+No, we cannot see the contents of the HTML page, because the content is ciphered this time. We also don't see any HTTP packet in WIreshark screenshot, only openvpn packets.
+

@@ -1,0 +1,131 @@
+node n1 {
+    type router
+    model PC
+    network-config {
+	hostname Alice
+	!
+	interface eth0
+	 ip address 10.0.1.20/24
+	 mac address 00:00:00:aa:00:01
+	!
+    }
+    canvas c1
+    iconcoords {92.0 141.0}
+    labelcoords {87.0 117.0}
+    interface-peer {eth0 n5}
+}
+
+node n2 {
+    type router
+    model PC
+    network-config {
+	hostname Bob
+	!
+	interface eth0
+	 ip address 10.0.1.21/24
+	 mac address 00:00:00:aa:00:02
+	!
+    }
+    canvas c1
+    iconcoords {96.0 378.0}
+    labelcoords {96.0 417.0}
+    interface-peer {eth0 n5}
+}
+
+node n3 {
+    type router
+    model PC
+    network-config {
+	hostname Carol
+	!
+	interface eth0
+	 ip address 10.0.0.20/24
+	 mac address 00:00:00:bb:00:01
+	!
+    }
+    canvas c1
+    iconcoords {510.0 95.0}
+    labelcoords {510.0 68.0}
+    interface-peer {eth0 n4}
+}
+
+node n4 {
+    type router
+    model router
+    network-config {
+	hostname router
+	!
+	interface eth1
+	 ip address 10.0.1.1/24
+	 mac address 00:00:00:aa:00:00
+	!
+	interface eth0
+	 ip address 10.0.0.1/24
+	 mac address 00:00:00:bb:00:00
+	!
+    }
+    canvas c1
+    iconcoords {511.0 255.0}
+    labelcoords {511.0 287.0}
+    interface-peer {eth0 n3}
+    interface-peer {eth1 n5}
+}
+
+node n5 {
+    type lanswitch
+    network-config {
+	hostname switch
+	!
+    }
+    canvas c1
+    iconcoords {288.0 254.0}
+    labelcoords {288.0 278.0}
+    interface-peer {e0 n1}
+    interface-peer {e1 n4}
+    interface-peer {e2 n2}
+}
+
+link l1 {
+    nodes {n3 n4}
+    bandwidth 0
+}
+
+link l2 {
+    nodes {n1 n5}
+    bandwidth 0
+}
+
+link l3 {
+    nodes {n5 n4}
+    bandwidth 0
+}
+
+link l4 {
+    nodes {n5 n2}
+    bandwidth 0
+}
+
+canvas c1 {
+    name {Canvas1}
+    refpt {0 0 47.5791667 -122.132322 2.0}
+    scale 150.0
+    size {600 500}
+}
+
+option global {
+    interface_names yes
+    ip_addresses yes
+    ipv6_addresses no
+    node_labels yes
+    link_labels no
+    show_api no
+    background_images no
+    annotations no
+    grid no
+    locked yes
+    traffic_start 0
+}
+
+option session {
+}
+

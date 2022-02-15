@@ -1,0 +1,27 @@
+q1:
+7 requests
+
+q2:
+Um dos request é feito primeiro do que os outros 6 (das imagens). Isto acontece porque primeiro é necessário mandar vir o ficheiro html todo que depois inclui as referências para as imagens. Logo, voltamos a fazer mais 6 request para mandar vir as imagens.
++ img q2
+
+q3:
+É não persistente porque a cada GET é necessário fazer o handshake, fazer o pedido e acabar a ligação. Sendo isto repetido para todos os pedidos, como vemos no screenshot, dai ser nao persistente. No screenshot, vemos que a resposta ao get vem com "Connection: close".
++ img q3
+
+q4:
+Desta vez a ligação é persistente. Como podemos ver no screenshot, o packet HTTP de retorno, além do código "200 OK", tem o atributo "Connection" com o valor "keep alive", daí a ligação ser persistente e é mantida mesmo depois da transferência dos recursos necessários para apresentar a página.
++ img q4
+
+q5:
+O campo host no header do HTTP request indica para onde mandar o recurso.
+
+q6:
+Source IP: 10.0.2.15 (o IP da minha máquina)
+Request type: GET
+URL: dogs.rc.com/admin
++ img q6
+
+q7:
+I used the header "Authorization", which indicated the following credentials: user: admin & password: super_duper_passw0rd_ead2
+

@@ -1,0 +1,40 @@
+Q1: ** poderia ser só 8? porque? **
+wlan.fc.type_subtype == 8 (or 0x8 instead of 8)
+Beacons are part of management frames with type field equal to 0 and beacons in particular are representend by value 0x8, meaning that their sub-type is 8.
+
+Q2: ** quando e que vem o proximo beacon frame? **
+SSID: djw, MAX address: 00:16:b6:e3:e9:8f
+The next beacon frame comes after around 0,1s.
+
+Q3: ** correto? **
+wlan.fc.type_subtype == 5
+Same as Q1, but now subtype for probe responses is represented by 0x5.
+
+Q4:
+MAC address of Apple device: 10:9a:dd:ac:6c:26
+SSID of AP: , MAC address of AP:
+
+Q5:
+
+
+Q6:
+
+
+Q7:
+
+
+Q8:
+
+
+Q9:
+
+
+Q10:
+
+
+Q11:
+
+
+Q12:
+
+

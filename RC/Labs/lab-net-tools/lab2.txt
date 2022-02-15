@@ -1,0 +1,56 @@
+q1:
+alice 10.0.0.20/24 eth0
+dan 10.0.5.20/24 eth0
+bob 10.0.2.21/24 eth0
+
+router1 eth0 10.0.0.1/24
+eth1 10.0.1.1/24
+eth2 10.0.4.2/24
+
+router2 eth0 10.0.1.2/24
+eth1 10.0.2.1/24
+eth2 10.0.3.1/24
+
+router3 eth0 10.0.3.2/24
+eth1 10.0.4.1/24
+eth2 10.0.5.1/24
+
+q2:
+ip addr add 10.0.2.20/24 dev eth0
++ img
+
+q3:
+Cada packet é mandado 3x com um TTL (segundo bit a contar da direita no IP address) cada vez maior até ser recebido corretamente pelo recetor, o que acontece quando o TTL é suficientemente alto e não ocorrem erros, dando origem ao ouput que tem os IPs do path do packet.
+Neste caso, os 3 packets com TTL = 0 mais os 3 packets com TTL = 1 não têm um TTL suficientemente alto o que leva o recetor a emitir um ICMP packet para o emissor, dando conta do erro e fazendo o emissor aumentar o TTL. Para TTL = 2, continua a não haver sucesso  em 2 (x3) emissões por causa do erro "Port unreachable". Para a 3º emissão com TTL = 2, todos os packets são recebidos pelo recetor e há sucesso na operação.
++ img
+
+q4:
+alice-bob: alice-router1-router2-bob
+alice-carol: alice-router1-router2-carol
+alice-dan: alice-router1-router2-router3-dan
+dan-bob: dan-router3-router2-bob
+dan-alice: dan-router3-router1-alice
+
+q5:
+Depende da topologia da rede. Como o router1 foi ligado primeiro ao router2 dá preferência a essa ligaçáo em vez de se lugar ao router3, dando a diferença entre o path alice-dan e dan-alice, já que no path dan-alice o router3 liga-se preferencialmente ao router1 e não ao router2.
++ img
+
+q6:
+Encontra o path alice-dan. Poderiamos encontrar o oposto corrento traceroute <alice IP> no bob.
+
+q7:
+Only requests (with no response).
+
+q8:
+Just replies.
+
+q9:
+The alice-dan and dan-alice routes are not the opposite of each other, because there is an extra router2 in alice-dan route. So, when we use alice to ping dan we will use one route to make the request while dan is replying using another route, giving us "Only requests (with no response)" in q7.
+
+q10:
+alice-bob: 1.89 Gbits/sec
+alice-carol: 149 Mbits/sec
+
+q11:
+Running ping from all hosts to each other. It doesn't work between alice and dan so malfunctioning link in the network must be between router 1 and router 3, so we replace that link.
+

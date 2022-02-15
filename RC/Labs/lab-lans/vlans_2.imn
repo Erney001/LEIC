@@ -1,0 +1,295 @@
+node n2 {
+    type router
+    model PC
+    network-config {
+	hostname n2
+	!
+	interface eth0
+	 ip address 10.0.0.4/24
+	!
+    }
+    canvas c1
+    iconcoords {190.0 514.0}
+    labelcoords {190.0 546.0}
+    interface-peer {eth0 n1}
+}
+
+node n3 {
+    type router
+    model PC
+    network-config {
+	hostname n3
+	!
+	interface eth0
+	 ip address 10.0.0.3/24
+	!
+    }
+    canvas c1
+    iconcoords {122.0 388.0}
+    labelcoords {122.0 420.0}
+    interface-peer {eth0 n1}
+}
+
+node n4 {
+    type router
+    model PC
+    network-config {
+	hostname n4
+	!
+	interface eth0
+	 ip address 10.0.0.2/24
+	!
+    }
+    canvas c1
+    iconcoords {404.0 221.0}
+    labelcoords {404.0 253.0}
+    interface-peer {eth0 n1}
+}
+
+node n5 {
+    type router
+    model PC
+    network-config {
+	hostname n5
+	!
+	interface eth0
+	 ip address 10.0.0.1/24
+	!
+    }
+    canvas c1
+    iconcoords {557.0 212.0}
+    labelcoords {557.0 244.0}
+    interface-peer {eth0 n1}
+}
+
+node n7 {
+    type router
+    model PC
+    network-config {
+	hostname n7
+	!
+	interface eth0
+	 ip address 10.0.0.5/24
+	!
+    }
+    canvas c1
+    iconcoords {836.0 208.0}
+    labelcoords {836.0 240.0}
+    interface-peer {eth0 n6}
+}
+
+node n8 {
+    type router
+    model PC
+    network-config {
+	hostname n8
+	!
+	interface eth0
+	 ip address 10.0.0.6/24
+	!
+    }
+    canvas c1
+    iconcoords {1161.0 215.0}
+    labelcoords {1161.0 247.0}
+    interface-peer {eth0 n6}
+}
+
+node n1 {
+    type router
+    model PC
+    network-config {
+	hostname b1switch
+	!
+	interface eth4
+	!
+	interface eth3
+	!
+	interface eth2
+	!
+	interface eth1
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {467.0 366.0}
+    labelcoords {467.0 398.0}
+    custom-image /usr/local/share/core/icons/normal/lanswitch.gif
+    interface-peer {eth0 n5}
+    interface-peer {eth1 n4}
+    interface-peer {eth2 n3}
+    interface-peer {eth3 n2}
+    interface-peer {eth4 n6}
+    services {DefaultRoute}
+}
+
+node n6 {
+    type router
+    model PC
+    network-config {
+	hostname b2switch
+	!
+	interface eth2
+	!
+	interface eth1
+	!
+	interface eth0
+	!
+    }
+    canvas c1
+    iconcoords {987.0 344.0}
+    labelcoords {987.0 376.0}
+    custom-image /usr/local/share/core/icons/normal/lanswitch.gif
+    interface-peer {eth0 n7}
+    interface-peer {eth1 n8}
+    interface-peer {eth2 n1}
+    services {DefaultRoute}
+}
+
+link l1 {
+    nodes {n5 n1}
+    bandwidth 0
+}
+
+link l2 {
+    nodes {n4 n1}
+    bandwidth 0
+}
+
+link l3 {
+    nodes {n3 n1}
+    bandwidth 0
+}
+
+link l4 {
+    nodes {n2 n1}
+    bandwidth 0
+}
+
+link l5 {
+    nodes {n6 n7}
+    bandwidth 0
+}
+
+link l6 {
+    nodes {n6 n8}
+    bandwidth 0
+}
+
+link l7 {
+    nodes {n1 n6}
+    bandwidth 0
+}
+
+annotation a1 {
+    iconcoords {43 293 342 569}
+    type oval
+    label {Physicists}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #c89595
+    width 0
+    border black
+    canvas c1
+}
+
+annotation a3 {
+    iconcoords {317 100 628 320}
+    type oval
+    label {Mathematicians}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #ddbebe
+    width 0
+    border black
+    canvas c1
+}
+
+annotation a4 {
+    type text
+    iconcoords {812.0 146.0}
+    label {}
+    canvas c1
+}
+
+annotation a5 {
+    iconcoords {714 114 963 297}
+    type oval
+    label {Physicists}
+    labelcolor #000000
+    fontfamily {Arial}
+    fontsize {12}
+    color #c89595
+    width 0
+    border black
+    canvas c1
+}
+
+annotation a6 {
+    iconcoords {1011 128 1287 302}
+    type oval
+    label {Mathematicians}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #ddbebe
+    width 0
+    border black
+    canvas c1
+}
+
+annotation a2 {
+    iconcoords {26 68 649 619}
+    type rectangle
+    label {Building 1}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #6c4a4a
+    width 0
+    border black
+    rad 25
+    canvas c1
+}
+
+annotation a7 {
+    iconcoords {677 56 1312 619}
+    type rectangle
+    label {Building 2}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #6c4a4a
+    width 0
+    border black
+    rad 25
+    canvas c1
+}
+
+canvas c1 {
+    name {Canvas1}
+    refpt {0 0 47.5791667 -122.132322 2.0}
+    scale {150.0}
+    size {1400 700}
+}
+
+option global {
+    interface_names yes
+    ip_addresses yes
+    ipv6_addresses no
+    node_labels no
+    link_labels no
+    show_api no
+    background_images no
+    annotations yes
+    grid no
+    locked yes
+    traffic_start 0
+}
+
+option session {
+    enablesdt=1
+}
+
