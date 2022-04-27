@@ -1,3 +1,10 @@
+<p align="center">
+  Official Repository:
+  <a href="https://github.com/socialsoftware/quizzes-tutor">
+    https://github.com/socialsoftware/quizzes-tutor
+  </a>
+</p>
+
 <h1 align="center">Quizzes Tutor</h1>
 
 <p align="center">
