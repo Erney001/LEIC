@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Retalhistas</title>
+    </head>
+    <body style="padding:20px">
+    <a href="{{ url_for('create_retalhista') }}">Inserir retalhista</a>
+    {% if cursors %}
+        <table border="2px">
+            <thead>
+                <tr>
+                    <th>Tin Retalhista</th>
+                    <th>Nome Retalhista</th>
+                    <th>Nome Categoria</th>
+                    <th>Num Serie IVM</th>
+                    <th>Fabricante IVM</th>
+                    <th>Remover retalhista?</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in cursors[0] %}
+                    <tr>
+                        <td>{{ record[0] }}</td>
+                        <td>{{ record[1] }}</td>
+                        <td>{{ record[2] }}</td>
+                        <td>{{ record[3] }}</td>
+                        <td>{{ record[4] }}</td>
+                        <td>
+                            <a href="{{ url_for('remove_retalhista', tin=record[0]) }}">remover</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p> Erro: não foi possível obter dados da base de dados!</p>
+    {% endif %}
+        <a href="{{ url_for('index') }}">Go to Homepage</a>
+    </body>
+</html>

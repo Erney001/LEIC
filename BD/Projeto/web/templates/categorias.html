@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Listar categorias</title>
+    </head>
+    <body style="padding:20px">
+        <a href="{{ url_for('create_category') }}">Inserir nova categoria</a>
+    {% if cursors %}
+        <table border="2px">
+            <thead>
+                <tr>
+                    <th>Categoria</th>
+                    <th>Remover categoria?</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in cursors[0] %}
+                    <tr>
+                        <td>{{ record[0] }}</td>
+                        <td>
+                            <a href="{{ url_for('remove_category', categoria=record[0]) }}">remover</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <table border="2px">
+            <thead>
+                <tr>
+                    <th>Super categoria</th>
+                    <th>Categoria</th>
+                    <th>Listar sub-categorias</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in cursors[1] %}
+                    <tr>
+                        <td>{{ record[0] }}</td>
+                        <td>{{ record[1] }}</td>
+                        <td>
+                            <a href="{{ url_for('list_sub_categories', super_categoria=record[0]) }}">ver</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p> Erro: não foi possível obter dados da base de dados!</p>
+    {% endif %}
+        <a href="{{ url_for('index') }}">Go to Homepage</a>
+    </body>
+</html>
