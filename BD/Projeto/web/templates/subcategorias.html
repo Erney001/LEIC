@@ -2,20 +2,26 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Subcategorias</title>
+        <title>App-Subcategorias {{ supercat }}</title>
     </head>
     <body>
+        <h2>Subcategorias de {{ supercat }}</h2>
     {% if cursor %}
         <table border="2px">
             <thead>
                 <tr>
-                    <th>Categoria</th>
+                    <th>{{ supercat }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for record in cursor %}
                     <tr>
-                        <td>{{ record[0] }}</td>
+                        <td>
+                            <a href="{{ url_for('list_sub_categories', super_categoria=record[0]) }}">
+                                <button type="button" style="background:#0fadb6;color:white;cursor: pointer;">ver</button> 
+                            </a> 
+                            {{ record[0] }}
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -23,6 +29,10 @@
     {% else %}
         <p> Erro: não foi possível obter dados da base de dados!</p>
     {% endif %}
-        <a href="{{ url_for('index') }}">Go to Homepage</a>
+        <p>
+            <a href="{{ url_for('list_categories') }}">
+                <button type="button" style="background:#b5b5b5;color:white;cursor: pointer;">Voltar para Categorias</button> 
+            </a>
+        </p>
     </body>
 </html>

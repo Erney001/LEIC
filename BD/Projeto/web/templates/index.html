@@ -4,9 +4,21 @@
         <meta charset="utf-8">
         <title>App</title>
     </head>
-    <body style="padding:20px">
-        <a href="{{ url_for('list_categorias') }}">Categorias</a>
-        <a href="{{ url_for('list_retalhistas') }}">Retalhistas</a>
-        <a href="{{ url_for('list_ivms') }}">IVMs</a>
+    <body style="padding:20px;">
+        <p>
+            <a href="{{ url_for('list_categories') }}">
+                <button type="button" style="background:#dcdbdb;color:rgb(96, 87, 87);cursor: pointer;">Categorias</button> 
+            </a>
+        </p>
+        <p>
+            <a href="{{ url_for('list_retailers') }}">
+                <button type="button" style="background:#dcdbdb;color:rgb(96, 87, 87);cursor: pointer;">Retalhistas</button> 
+            </a>
+        </p>
+        <p>
+            <a href="{{ url_for('list_ivms') }}">
+                <button type="button" style="background:#dcdbdb;color:rgb(96, 87, 87);cursor: pointer;">IVMS</button> 
+            </a>
+        </p>
     </body>
 </html>

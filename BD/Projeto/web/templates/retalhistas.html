@@ -2,11 +2,14 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Retalhistas</title>
+        <title>App-Retalhistas</title>
     </head>
     <body style="padding:20px">
-    <a href="{{ url_for('create_retalhista') }}">Inserir retalhista</a>
-    {% if cursors %}
+        <h2>Retalhistas</h2>
+        <a href="{{ url_for('create_retailer') }}">
+            <button type="button" style="background:#2e68b8;color:white;cursor: pointer;">Inserir retalhista</button> 
+        </a>
+    {% if cursor %}
         <table border="2px">
             <thead>
                 <tr>
@@ -15,19 +18,20 @@
                     <th>Nome Categoria</th>
                     <th>Num Serie IVM</th>
                     <th>Fabricante IVM</th>
-                    <th>Remover retalhista?</th>
                 </tr>
             </thead>
             <tbody>
-                {% for record in cursors[0] %}
+                {% for record in cursor %}
                     <tr>
                         <td>{{ record[0] }}</td>
                         <td>{{ record[1] }}</td>
                         <td>{{ record[2] }}</td>
                         <td>{{ record[3] }}</td>
                         <td>{{ record[4] }}</td>
-                        <td>
-                            <a href="{{ url_for('remove_retalhista', tin=record[0]) }}">remover</a>
+                        <td style="border:none;">
+                            <a href="{{ url_for('remove_retailer', tin=record[0]) }}">
+                                <button type="button" style="background:#cb1e20;color:white;cursor: pointer;">Remover</button> 
+                            </a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -36,6 +40,10 @@
     {% else %}
         <p> Erro: não foi possível obter dados da base de dados!</p>
     {% endif %}
-        <a href="{{ url_for('index') }}">Go to Homepage</a>
+    <p>
+        <a href="{{ url_for('index') }}">
+            <button type="button" style="background:#b5b5b5;color:white;cursor: pointer;">Go To Homepage</button> 
+        </a>
+    </p>
     </body>
 </html>

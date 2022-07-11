@@ -2,45 +2,57 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Listar categorias</title>
+        <title>App-Categorias</title>
     </head>
     <body style="padding:20px">
-        <a href="{{ url_for('create_category') }}">Inserir nova categoria</a>
-    {% if cursors %}
+        <h2>Categorias</h2>
+        <a href="{{ url_for('create_category') }}">
+            <button type="button" style="background:#2e68b8;color:white;cursor: pointer;">Inserir categoria</button> 
+        </a>
+    {% if cursors[0] and cursors[1] and cursors[2] %}
         <table border="2px">
             <thead>
                 <tr>
                     <th>Categoria</th>
-                    <th>Remover categoria?</th>
+                    <th>Tipo</th>
                 </tr>
             </thead>
             <tbody>
                 {% for record in cursors[0] %}
                     <tr>
                         <td>{{ record[0] }}</td>
-                        <td>
-                            <a href="{{ url_for('remove_category', categoria=record[0]) }}">remover</a>
+                        {% if record in simpler %}
+                            <td style="color:rgb(11, 160, 88);">Simples</td>
+                        {% else %}
+                            <td style="color:rgb(19, 105, 204);">Super</td>
+                        {% endif %}
+                        <td style="border:none;">
+                            <a href="{{ url_for('remove_category', categoria=record[0]) }}">
+                                <button type="button" style="background:#cb1e20;color:white;cursor: pointer;">Remover</button> 
+                            </a>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <h3>Hierarquia de categorias</h3>
         <table border="2px">
             <thead>
                 <tr>
                     <th>Super categoria</th>
                     <th>Categoria</th>
-                    <th>Listar sub-categorias</th>
                 </tr>
             </thead>
             <tbody>
                 {% for record in cursors[1] %}
                     <tr>
-                        <td>{{ record[0] }}</td>
-                        <td>{{ record[1] }}</td>
                         <td>
-                            <a href="{{ url_for('list_sub_categories', super_categoria=record[0]) }}">ver</a>
+                            <a href="{{ url_for('list_sub_categories', super_categoria=record[0]) }}">
+                                <button type="button" style="background:#0fadb6;color:white;cursor: pointer;">ver</button> 
+                            </a> 
+                            {{ record[0] }}
                         </td>
+                        <td>{{ record[1] }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -48,6 +60,10 @@
     {% else %}
         <p> Erro: não foi possível obter dados da base de dados!</p>
     {% endif %}
-        <a href="{{ url_for('index') }}">Go to Homepage</a>
+        <p>
+            <a href="{{ url_for('index') }}">
+                <button type="button" style="background:#b5b5b5;color:white;cursor: pointer;">Go To Homepage</button> 
+            </a>
+        </p>
     </body>
 </html>

@@ -171,6 +171,7 @@ INSERT INTO IVM VALUES (0002, 'Vending Machines Lda');
 INSERT INTO IVM VALUES (0003, 'Vending Machines Lda');
 INSERT INTO IVM VALUES (0004, 'Vending Machines Lda');
 INSERT INTO IVM VALUES (0005, 'Vending Machines Lda');
+INSERT INTO IVM VALUES (0006, 'Vending Machines Lda');
 
 INSERT INTO ponto_de_retalho VALUES ('Galp', 'Lisboa', 'Oeiras');
 INSERT INTO ponto_de_retalho VALUES ('Repsol', 'Lisboa', 'Oeiras');
@@ -180,33 +181,20 @@ INSERT INTO instalada_em VALUES (0002, 'Vending Machines Lda', 'Repsol');
 INSERT INTO instalada_em VALUES (0003, 'Vending Machines Lda', 'Galp');
 INSERT INTO instalada_em VALUES (0004, 'Vending Machines Lda', 'Repsol');
 INSERT INTO instalada_em VALUES (0005, 'Vending Machines Lda', 'Repsol');
+INSERT INTO instalada_em VALUES (0006, 'Vending Machines Lda', 'Galp');
 
 INSERT INTO prateleira VALUES (1, 0001, 'Vending Machines Lda', 0.2, 'Gelados');
-INSERT INTO prateleira VALUES (2, 0001, 'Vending Machines Lda', 0.2, 'Gelados');
-INSERT INTO prateleira VALUES (3, 0001, 'Vending Machines Lda', 0.3, 'Refrigerantes');
-INSERT INTO prateleira VALUES (1, 0002, 'Vending Machines Lda', 0.2, 'Frios');
-INSERT INTO prateleira VALUES (2, 0002, 'Vending Machines Lda', 0.2, 'Congelados');
-INSERT INTO prateleira VALUES (3, 0002, 'Vending Machines Lda', 0.3, 'Refrigerantes');
-INSERT INTO prateleira VALUES (1, 0003, 'Vending Machines Lda', 0.2, 'Frios');
-INSERT INTO prateleira VALUES (2, 0003, 'Vending Machines Lda', 0.2, 'Congelados');
-INSERT INTO prateleira VALUES (3, 0003, 'Vending Machines Lda', 0.3, 'Refrigerantes');
+INSERT INTO prateleira VALUES (1, 0002, 'Vending Machines Lda', 0.2, 'Gelados');
+INSERT INTO prateleira VALUES (1, 0003, 'Vending Machines Lda', 0.3, 'Refrigerantes');
 INSERT INTO prateleira VALUES (1, 0004, 'Vending Machines Lda', 0.2, 'Frios');
-INSERT INTO prateleira VALUES (2, 0004, 'Vending Machines Lda', 0.2, 'Congelados');
-INSERT INTO prateleira VALUES (3, 0004, 'Vending Machines Lda', 0.3, 'Refrigerantes');
-INSERT INTO prateleira VALUES (1, 0005, 'Vending Machines Lda', 0.2, 'Frutos');
-INSERT INTO prateleira VALUES (2, 0005, 'Vending Machines Lda', 0.2, 'Frutos');
-INSERT INTO prateleira VALUES (3, 0005, 'Vending Machines Lda', 0.3, 'Refrigerantes');
+INSERT INTO prateleira VALUES (1, 0005, 'Vending Machines Lda', 0.2, 'Refrigerantes');
+INSERT INTO prateleira VALUES (1, 0006, 'Vending Machines Lda', 0.3, 'Refrigerantes');
 
 INSERT INTO planograma VALUES (0000000000002, 1, 0001, 'Vending Machines Lda', 2, 6, 'A');
-INSERT INTO planograma VALUES (0000000000003, 1, 0001, 'Vending Machines Lda', 2, 4, 'A');
-INSERT INTO planograma VALUES (0000000000002, 2, 0001, 'Vending Machines Lda', 4, 6, 'A');
-INSERT INTO planograma VALUES (0000000000003, 2, 0001, 'Vending Machines Lda', 2, 6, 'A');
-INSERT INTO planograma VALUES (0000000000005, 3, 0001, 'Vending Machines Lda', 4, 8, 'A');
-INSERT INTO planograma VALUES (0000000000003, 1, 0002, 'Vending Machines Lda', 2, 6, 'B');
-INSERT INTO planograma VALUES (0000000000004, 1, 0002, 'Vending Machines Lda', 2, 8, 'B');
-INSERT INTO planograma VALUES (0000000000005, 3, 0002, 'Vending Machines Lda', 2, 6, 'B');
-INSERT INTO planograma VALUES (0000000000005, 3, 0003, 'Vending Machines Lda', 2, 4, 'C');
-INSERT INTO planograma VALUES (0000000000005, 3, 0004, 'Vending Machines Lda', 2, 8, 'D');
+INSERT INTO planograma VALUES (0000000000002, 1, 0002, 'Vending Machines Lda', 2, 4, 'A');
+INSERT INTO planograma VALUES (0000000000005, 1, 0003, 'Vending Machines Lda', 4, 8, 'A');
+INSERT INTO planograma VALUES (0000000000003, 1, 0004, 'Vending Machines Lda', 2, 6, 'A');
+INSERT INTO planograma VALUES (0000000000005, 1, 0005, 'Vending Machines Lda', 4, 8, 'A');
 
 INSERT INTO retalhista VALUES (0001, 'Continente');
 INSERT INTO retalhista VALUES (0002, 'Pingo Doce');
@@ -217,14 +205,14 @@ INSERT INTO responsavel_por VALUES ('Gelados', 0001, 0001, 'Vending Machines Lda
 INSERT INTO responsavel_por VALUES ('Frios', 0002, 0002, 'Vending Machines Lda');
 INSERT INTO responsavel_por VALUES ('Refrigerantes', 0001, 0003, 'Vending Machines Lda');
 INSERT INTO responsavel_por VALUES ('Congelados', 0001, 0004, 'Vending Machines Lda');
-INSERT INTO responsavel_por VALUES ('Frutos', 0003, 0005, 'Vending Machines Lda');
+INSERT INTO responsavel_por VALUES ('Frutos', 0001, 0005, 'Vending Machines Lda');
 
 INSERT INTO evento_reposicao VALUES (0000000000002, 1, 0001, 'Vending Machines Lda', '2022-06-09 08:20:17', 4, 0001);
-INSERT INTO evento_reposicao VALUES (0000000000002, 2, 0001, 'Vending Machines Lda', '2022-05-08 14:02:21', 2, 0002);
-INSERT INTO evento_reposicao VALUES (0000000000005, 3, 0001, 'Vending Machines Lda', '2022-06-11 15:47:04', 8, 0002);
+INSERT INTO evento_reposicao VALUES (0000000000002, 1, 0002, 'Vending Machines Lda', '2022-05-08 14:02:21', 2, 0002);
+INSERT INTO evento_reposicao VALUES (0000000000005, 1, 0003, 'Vending Machines Lda', '2022-06-11 15:47:04', 8, 0001);
 
 -- Resultado esperado para as queries pedidas na parte 3:
 --  1: 1 - Continente
 --  2: 1 - Continente
---  3: 1 - Camaroes, 3 - Magnum, 4 - Iogurte
+--  3: 1 - Camaroes, 3 - Magnum, 4 - Iogurte, 6 - Ameixas, 7 - Amoras, 8 - Ale
 --  4: 5 - Coca-cola

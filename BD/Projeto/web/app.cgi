@@ -7,9 +7,9 @@ import psycopg2.extras
 
 ## SGBD configs
 DB_HOST = "db.tecnico.ulisboa.pt"
-DB_USER = "istxxxx"
+DB_USER = "istxxxxx"
 DB_DATABASE = DB_USER
-DB_PASSWORD = "xxx"
+DB_PASSWORD = "xxxx"
 DB_CONNECTION_STRING = "host=%s dbname=%s user=%s password=%s" % (
     DB_HOST,
     DB_DATABASE,
@@ -22,27 +22,24 @@ app = Flask(__name__)
 # Auxiliary functions
 ## Executes queries in sequence at same DB session
 ### queries = (query, data=None) 
-def executeQueries(dbConn, queries, cursor=None):
-    def executeQuery(cursor, query, data):
-        cursor.execute(query, data) if data else cursor.execute(query)
-
-    if (not cursor):
-        cursors = list()
-        for query, data in queries:
-            cursor = dbConn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-            executeQuery(cursor, query, data)
-            cursors.append(cursor)
-        return cursors
-    
+def executeMultiQueries(dbConn, queries):
+    cursors = list()
     for query, data in queries:
-        executeQuery(cursor, query, data)
+        cursor = dbConn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        if data:
+            cursor.execute(query, data)
+        else:
+            cursor.execute(query)
+        cursors.append(cursor)
+    return cursors
 
 ## Closes DB connections
-def closeConnection(dbConn, cursors):
+def closeMultiConnections(dbConn, cursors):
     for cursor in cursors:
         cursor.close()
     dbConn.close()
 
+## Checks query given a condition
 def checkCursor(cursor, query, cond, data=None, n=1):
     cursor.execute(query, data) if data else cursor.execute(query)
     if n:
@@ -53,36 +50,37 @@ def checkCursor(cursor, query, cond, data=None, n=1):
 
 @app.route('/')
 def index():
-    return render_template("index.html", cursor=None)
+    return render_template("index.html")
 
-## 5.a)
+## 5.a) ----------------------------------------------------------------------------
 
 # Get category hierarchy
 @app.route("/categorias", methods=["GET"])
-def list_categorias():
+def list_categories():
     dbConn = None
     cursors = None
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
-        cursors = executeQueries(dbConn, 
+        cursors = executeMultiQueries(dbConn, 
             [("SELECT * FROM categoria;", None),
-             ("SELECT * FROM tem_outra;", None)])
-        return render_template("categorias.html", cursors=cursors)
+             ("SELECT * FROM tem_outra;", None),
+             ("SELECT * FROM categoria_simples", None)])
+        simpler = cursors[2].fetchall()
+        return render_template("categorias.html", cursors=cursors, simpler=simpler)
     except Exception as e:
-        # there is no need to do rollback in get methods
-        return str(e)  # Renders a page with the error.
+        dbConn.rollback()
+        return render_template("erro.html", error_message=e)
     finally:
         dbConn.commit()
-        closeConnection(dbConn, cursors)
+        closeMultiConnections(dbConn, cursors)
 
 
-### TODO insert category html and route
 @app.route("/categorias/nova_categoria")
 def create_category():
     try:
-        return render_template("categoria_form.html")
+        return render_template("nova_categoria.html")
     except Exception as e:
-        return str(e)
+        return render_template("erro.html", error_message=e)
 
 
 @app.route("/categorias/insert", methods=["POST"])
@@ -95,18 +93,6 @@ def insert_category():
         name = request.form["nome"]
         father = request.form["pai"]
 
-        if name == father: # Trigger [R1-1] does this
-            raise Exception("Categoria nao pode estar contida em si mesma!")
-
-        name_in = checkCursor(cursor, "SELECT * FROM categoria WHERE nome = %s", lambda x: x != [], data=(name, ))
-        father_in = checkCursor(cursor, "SELECT * FROM categoria WHERE nome = %s", lambda x: x != [], data=(father, ))
-
-        if name_in:
-            raise Exception("Categoria '%s' existente!" %(name))
-
-        if not father_in:
-            raise Exception("Categoria pai '%s' não existe!" %(father))
-
         cursor.execute("INSERT INTO categoria VALUES (%s);", (name, ))
         cursor.execute("INSERT INTO categoria_simples VALUES (%s);", (name, ))
 
@@ -118,10 +104,10 @@ def insert_category():
         
         cursor.execute("INSERT INTO tem_outra VALUES (%s, %s);", (father, name))
 
-        return redirect(url_for('list_categorias'))
+        return redirect(url_for('list_categories'))
     except Exception as e:
         dbConn.rollback()
-        return str(e)
+        return render_template("error.html", error_message=e)
     finally:
         dbConn.commit()
         cursor.close()
@@ -136,13 +122,8 @@ def remove_category():
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         category = request.args['categoria']
-        # check if category exists (no triggers assigned for this)
-        is_super = False
-        is_simpler = checkCursor(cursor, "SELECT 1 FROM categoria_simples WHERE nome = %s", lambda t: t, data= (category, ), n=1)
-        if not is_simpler:
-            is_super = checkCursor(cursor, "SELECT 1 FROM super_categoria WHERE nome = %s", lambda t: t, data= (category, ), n=1)
-            if not is_super:
-                raise Exception("Category '%s' does not exist" %(category))
+
+        simples = checkCursor(cursor, "SELECT 1 FROM categoria_simples WHERE nome = %s", lambda t: t != [], data= (category, ), n=1)
 
         cursor.execute("DELETE FROM evento_reposicao USING produto WHERE evento_reposicao.ean=produto.ean AND produto.cat = %s;", (category, ))
         cursor.execute("DELETE FROM planograma USING produto, prateleira WHERE (planograma.ean=produto.ean AND produto.cat = %s) OR \
@@ -157,59 +138,60 @@ def remove_category():
         
         cursor.execute("DELETE FROM tem_outra WHERE super_categoria = %s OR categoria = %s;", (category, category))
         
-        if is_super:
-            cursor.execute("DELETE FROM super_categoria WHERE nome = %s;", (category, ))
+        if simples:
+            cursor.execute("DELETE FROM categoria_simples WHERE nome = %s;", (category, )) 
         else:
-            cursor.execute("DELETE FROM categoria_simples WHERE nome = %s;", (category, ))
+            cursor.execute("DELETE FROM super_categoria WHERE nome = %s;", (category, ))
         cursor.execute("DELETE FROM categoria WHERE nome = %s;", (category, ))
     
-        
-        # verificar se a categoria pai nao tiver filhos passar a simples
+        # check if a super category hasn't more childs (become simpler)
         staged_fathers = checkCursor(cursor, "SELECT nome FROM super_categoria \
                                                 EXCEPT SELECT super_categoria FROM tem_outra;", lambda t: t, data= (category, ), n=None)
         for father in staged_fathers:
             cursor.execute("DELETE FROM super_categoria WHERE nome = %s;", father)
             cursor.execute("INSERT INTO categoria_simples VALUES (%s);", father)
 
-        return redirect(url_for('list_categorias'))
+        return redirect(url_for('list_categories'))
     except Exception as e:
         dbConn.rollback()
-        return str(e)
+        return render_template("error.html", error_message=e)
     finally:
         dbConn.commit()
         cursor.close()
         dbConn.close()
 
 
-## 5.b)
+## 5.b) ----------------------------------------------------------------------------
 
 @app.route("/retalhistas", methods=["GET"])
-def list_retalhistas():
+def list_retailers():
     dbConn = None
-    cursors = None
+    cursor = None
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
-        cursors = executeQueries(dbConn, 
-            [("SELECT * FROM retalhista NATURAL JOIN responsavel_por;", None)])
+        cursor = dbConn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cursor.execute("SELECT * FROM retalhista NATURAL JOIN responsavel_por \
+                       ORDER BY tin;")
 
-        return render_template("retalhistas.html", cursors=cursors)
+        return render_template("retalhistas.html", cursor=cursor)
     except Exception as e:
-        return str(e)  # Renders a page with the error.
+        dbConn.rollback()
+        return render_template("error.html", error_message=e)
     finally:
         dbConn.commit()
-        closeConnection(dbConn, cursors)
-
+        cursor.close()
+        dbConn.close()
 
 @app.route("/retalhistas/novo_retalhista")
-def create_retalhista():
+def create_retailer():
     try:
         return render_template("novo_retalhista.html")
     except Exception as e:
-        return str(e)
+        return render_template("error.html", error_message=e)
 
 
 @app.route("/retalhistas/insert", methods=["POST"])
-def insert_retalhista():
+def insert_retailer():
     dbConn = None
     cursor = None
     try:
@@ -220,21 +202,14 @@ def insert_retalhista():
         num_serie = request.form["num_serie"]
         fabricante = request.form["fabricante"]
         categoria = request.form["categoria"]
-        ean = request.form["ean"]
-        nro = request.form["nro"]
-        faces = request.form["faces"]
-        unidades = request.form["unidades"]
-        loc = request.form["loc"]
-        # adicionar mais alguma coisa? a que se referia o prod na img?
 
         cursor.execute("INSERT INTO retalhista VALUES (%s, %s);", (tin, nome, ))
         cursor.execute("INSERT INTO responsavel_por VALUES (%s, %s, %s, %s);", (categoria, tin, num_serie, fabricante, ))
-        cursor.execute("INSERT INTO planograma VALUES (%s, %s, %s, %s, %s, %s, %s);", (ean, nro, num_serie, fabricante, faces, unidades, loc, ))
 
-        return redirect(url_for('list_retalhistas'))
+        return redirect(url_for('list_retailers'))
     except Exception as e:
         dbConn.rollback()
-        return str(e)
+        return render_template("error.html", error_message=e)
     finally:
         dbConn.commit()
         cursor.close()
@@ -242,30 +217,29 @@ def insert_retalhista():
 
 
 @app.route("/retalhistas/remove")
-def remove_retalhista():
+def remove_retailer():
     dbConn = None
     cursor = None
     try:
         dbConn = psycopg2.connect(DB_CONNECTION_STRING)
         cursor = dbConn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         tin = request.args['tin']
-    
-        executeQueries(dbConn, [    
-            ("DELETE FROM evento_reposicao WHERE tin = %s;", (tin, )),
-            ("DELETE FROM retalhista WHERE tin = %s;", (tin, )),
-            ("DELETE FROM responsavel_por WHERE tin = %s);", (tin, ))], cursor)
 
-        return redirect(url_for('list_retalhistas'))
+        cursor.execute("DELETE FROM evento_reposicao WHERE tin = %s;", (tin, ))
+        cursor.execute("DELETE FROM responsavel_por WHERE tin = %s;", (tin, ))
+        cursor.execute("DELETE FROM retalhista WHERE tin = %s;", (tin, ))
+        
+        return redirect(url_for('list_retailers'))
     except Exception as e:
         dbConn.rollback()
-        return str(e)
+        return render_template("error.html", error_message=e)
     finally:
         dbConn.commit()
         cursor.close()
         dbConn.close()
 
 
-## 5.c)
+## 5.c) ----------------------------------------------------------------------------
 
 @app.route("/ivms", methods=["GET"])
 def list_ivms():
@@ -278,8 +252,8 @@ def list_ivms():
 
         return render_template("ivms.html", cursor=cursor)
     except Exception as e:
-        # there is no need to do rollback in get methods
-        return str(e)  # Renders a page with the error.
+        dbConn.rollback()
+        return render_template("error.html", error_message=e)
     finally:
         dbConn.commit()
         cursor.close()
@@ -287,7 +261,7 @@ def list_ivms():
 
 
 @app.route("/ivms/eventos", methods=["GET"]) # post?
-def list_eventos():
+def list_events():
     dbConn = None
     cursor = None
     try:
@@ -296,7 +270,6 @@ def list_eventos():
         num_serie = request.args['num_serie']
         fabricante = request.args['fabricante']
 
-        # Here
         cursor.execute("SELECT nome, SUM(unidades) FROM evento_reposicao \
             INNER JOIN tem_categoria ON evento_reposicao.ean=tem_categoria.ean \
             WHERE num_serie = %s AND fabricante = %s \
@@ -304,14 +277,14 @@ def list_eventos():
 
         return render_template("eventos.html", cursor=cursor) # confirm
     except Exception as e:
-        return str(e)
+        return render_template("error.html", error_message=e)
     finally:
         dbConn.commit()
         cursor.close()
         dbConn.close()
 
 
-## 5.d)
+## 5.d) ----------------------------------------------------------------------------
 
 @app.route("/categorias/subcategorias", methods=["GET"])
 def list_sub_categories():
@@ -322,16 +295,15 @@ def list_sub_categories():
         cursor = dbConn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         super_categoria = request.args['super_categoria']
 
-        # confirm this
         cursor.execute("WITH RECURSIVE subcats AS ( \
-            SELECT super_categoria, categoria FROM tem_outra WHERE super_categoria = %s \
-            UNION \
-            SELECT t.super_categoria, t.categoria FROM tem_outra t INNER JOIN subcats s ON s.categoria=t.super_categoria \
-        ) SELECT * FROM subcats;", (super_categoria, ))
+                        SELECT categoria FROM tem_outra WHERE super_categoria = %s \
+                        UNION ALL \
+                        SELECT t.categoria FROM tem_outra t INNER JOIN subcats s ON s.categoria=t.super_categoria \
+                    ) SELECT * FROM subcats;", (super_categoria, ))
 
-        return render_template("subcategorias.html", cursor=cursor)
+        return render_template("subcategorias.html", supercat=super_categoria, cursor=cursor)
     except Exception as e:
-        return str(e)
+        return render_template("error.html", error_message=e)
     finally:
         dbConn.commit()
         cursor.close()
